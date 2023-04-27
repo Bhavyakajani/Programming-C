@@ -1,0 +1,111 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <time.h>
+
+
+struct board
+{
+    int **matrix, nofcol, nofrows, nofp, nofplayers, x, y;
+
+} game;
+void boardgen()
+{
+    //Input for dimensions
+    
+    int **matrix;
+    
+    
+    //Random number generator
+    
+    int r, seed;
+        time_t tt;
+        seed = time(&tt);
+        srand(seed);
+        
+    //Text file    
+        
+    FILE *fp;
+    fp=fopen("Text.txt", "w");
+    
+    //Allocation for rows and columns
+    
+    game.nofrows+=1;
+    game.matrix=malloc(game.nofrows*sizeof(int *));
+    for(int i=0;i<game.nofrows;i++)
+    {
+        game.matrix[i]=malloc(game.nofcol*sizeof(int));
+    }
+    for(int i=0;i<game.nofrows;i++)
+    {
+        if(i==0)
+        printf("  \t");
+        else
+            printf("r%d\t", i);
+
+        for(int j=0;j<game.nofcol;j++)
+        {
+            if(i==0)
+            {
+                printf("c%d\t", j+1);
+            }
+            else
+        {
+            game.matrix[i][j]=90+rand()%4; //assigning random numbers generator
+            if(game.matrix[i][j]==90)
+            {
+                printf("XX\t");     //printing for the water
+                fprintf(fp, "XX\t" );
+            }
+            else{
+            printf("%d\t", game.matrix[i][j]);    //printing the board
+            fprintf(fp, "%d\t", game.matrix[i][j]);
+            }
+        }
+        }
+        printf("\n");
+        fprintf(fp,"\n");
+    }
+    fclose(fp);
+}
+
+void placement_input() //input for coordinates
+{
+    
+    for(int i=1; i<=game.nofp; i++){
+    
+    printf("Enter Co-ordinates to place penguins [X][Y]:");
+    scanf("%d %d", &game.x, &game.y);
+    if(game.x<=game.nofrows && game.y<=game.nofcol)
+    {
+        printf("Valid");
+    }
+    else
+    printf("Invalid co-ordinates :\n\n");
+    break;
+    }
+    
+       
+   
+}
+int main()
+{
+    printf("Enter the number of rows :\n");
+    scanf("%d", &game.nofrows);
+    
+    printf("Enter the number of columns :\n");
+    scanf("%d", &game.nofcol);
+    boardgen();
+    game.nofplayers=2;
+    printf("Board of size : [%d][%d]\n", game.nofrows-1, game.nofcol);
+    printf("Enter No. of penguins per player :");
+    scanf("%d", &game.nofp);
+    if(game.nofp<game.nofrows || game.nofp<game.nofcol)
+    {
+    printf("\n");
+    printf("------------------------------------------------------\n");
+    printf("\n        Placement Phase       \n");
+    placement_input();
+    }
+    else
+    printf("Can't fit this amount of penguins on the board");
+}
